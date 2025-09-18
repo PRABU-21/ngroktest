@@ -1,5 +1,5 @@
 !pip install flask pyngrok && \
-ngrok config add-authtoken 2thd7cCsNZHiMDXtyNVKeifH13C_4DzXDA37X2wXDSbnR93iR && \
+ngrok config add-authtoken "2thd7cCsNZHiMDXtyNVKeifH13C_4DzXDA37X2wXDSbnR93iR" && \
 python - <<'EOF'
 
 # main.py
