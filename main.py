@@ -15,6 +15,13 @@ RESUME_PIPELINE = r"resumeocr.py"
 # FastAPI app
 # =============================
 app = FastAPI()
+@app.get("/ping")
+async def ping():
+    """
+    Simple test endpoint to verify server is running
+    """
+    return {"message": "pong 🏓"}
+
 
 @app.post("/recommendations")
 async def recommend(file: UploadFile = File(...)):
