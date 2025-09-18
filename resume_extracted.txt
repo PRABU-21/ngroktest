@@ -1,0 +1,62 @@
+Page 1:
+B.Tech AI & DS - CGPA 8.45*, Currently pursuing Artificial Intelligence and Data Science in Kongu
+Engineering College.
+Grade 12 - 86.2%, Graduated in March 2023, The Ashok Leyland School, CBSE.
+Grade 10 - 88.2%, Graduated in March 2021, The Ashok Leyland School, CBSE.
+Technical Skills 
+Programming Lanuages - Java,C,Python,JavaScript.
+AI Skills- LLM,Deep Learning,Machine Learning
+Data Analysis - PowerBI
+Full Stack - MongoDB,Express,React,Node.js
+PRABAKARAN S B
+About
+Enthusiastic AI Developer Fresher with a strong foundation in Python, C, Java, and core concepts like OOPs
+and Machine Learning. Skilled in MERN stack, Tailwind CSS, HTML, and basics of Prompt Engineering.
+Passionate about building innovative solutions with a commitment to continuous learning and excellence.. I
+am passionate about delivering innovative solutions and Continuously seeking growth opportunities through
+which I bring a strong commitment to excellence.
+Education
+Achievements
+Winners - 1  Place in Techno Fest - Project Expo , Kongu Engineering College,2025,
+st
+Runners, 2  place in Hacknovate - Hackathon ,Kongu Engineering College, 2024
+nd
+Winner, 1st Place in Paper Presentation in New Wells conducted by the AI Association , Kongu
+Engineering College, Sept 2024 
+Finalist, HCS , AI Coding Club (AICC) , Kongu Engineering College, Oct 2024.
+Projects
+Full Stack Project(MERN)- “Library Management System” - 
+                Built a full-stack Library Management System using MongoDB, Express.js, React, and
+Node.js. Implemented CRUD operations to manage books, authors, and user records with intuitive
+UI and real-time updates. Enabled seamless book issuance, return tracking, and search
+functionality.
+Intel MediLink project - “Advanced healthcare insights powered by AI”
+                  Developed an AI-powered healthcare platform with secure JWT authentication and
+real-time health tracking. Integrated Bio-Medical-Llama-3-8B for food image analysis and a
+conversational chatbot for medical insights. Enabled sentiment analysis via voice/text inputs and
+delivered weekly medical news updates. Built using MERN stack with a fully responsive, mobile-
+friendly UI
+LLM - “Replicated GPT-2 Architecture From Scratch”
+                 Reconstructed GPT-2 architecture from scratch, implementing key components like
+multi-head attention, positional encoding, layer normalization, and autoregressive decoding.
+Gained in-depth understanding of transformer layers and attention mechanisms. Successfully
+integrated and fine-tuned pre-trained weights for improved language generation performance. 
+Aspiring AI Developer
+Leadership - AIDS department, Placement Co ordinator, 2024 -  Present
+Certificates
+MongoDB - Node.js Associate developer
+Microsoft- Microsoft Azure Engineer Associate
+Intel - Intel Unnati Industrial Training 2025.
+Experience -ChainAim Technologies - Currently interning at Chain Aim Technologies,
+contributing to ACTUS framework integration and financial mapping logic. Collaborated with the
+team to implement mappings and workflows, documented using Docusaurus. Actively using
+GitHub for version control and collaborative development. Hands-on experience with financial
+contract standards and real-world use cases.
+Gmail
+Likedin
+leetcode
+phone
+GitHub
+
+No tables detected on this page.
+========================================

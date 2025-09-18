@@ -1,0 +1,58 @@
+{
+    "Name": "PRABAKARAN S B",
+    "Contact": {
+        "email": null,
+        "phone": null
+    },
+    "Skills": [
+        "Java",
+        "C",
+        "Python",
+        "JavaScript",
+        "LLM",
+        "Deep Learning",
+        "Machine Learning",
+        "PowerBI",
+        "MongoDB",
+        "Express",
+        "React",
+        "Node.js",
+        "MERN stack",
+        "Tailwind CSS",
+        "HTML",
+        "Prompt Engineering",
+        "OOPs",
+        "JWT authentication",
+        "GitHub",
+        "Docusaurus"
+    ],
+    "Education": [
+        {
+            "degree": "B.Tech AI & DS",
+            "institution": "Kongu Engineering College",
+            "years": null
+        },
+        {
+            "degree": "Grade 12",
+            "institution": "The Ashok Leyland School",
+            "years": "Graduated in March 2023"
+        },
+        {
+            "degree": "Grade 10",
+            "institution": "The Ashok Leyland School",
+            "years": "Graduated in March 2021"
+        }
+    ],
+    "Work Experience": [
+        {
+            "company": "ChainAim Technologies",
+            "role": "Intern",
+            "duration": "Currently interning"
+        }
+    ],
+    "Certifications": [
+        "MongoDB - Node.js Associate developer",
+        "Microsoft- Microsoft Azure Engineer Associate",
+        "Intel - Intel Unnati Industrial Training 2025"
+    ]
+}
