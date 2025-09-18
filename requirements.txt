@@ -24,3 +24,8 @@ python-dotenv
 
 # Optional: Gemini API
 google-generativeai
+
+
+pyngrok
+fastapi
+uvicorn
