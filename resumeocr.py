@@ -12,6 +12,8 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import subprocess
 import sys
 
+
+
 pytesseract.pytesseract.tesseract_cmd = r'Tesseract-OCR\tesseract.exe'
 
 def clean_text(text):
@@ -110,7 +112,9 @@ def extract_contents_from_pdf(pdf_path, output_dir, report_txt_path):
 
 # ======================
 # PLACEHOLDERS (Change these before running)
-pdf_path = r"resume.pdf"
+file_path = sys.argv[1]  # This should be the uploaded PDF
+# Then parse it and save parsed_resume.json
+pdf_path = file_path
 output_dir = r"ExtractedTables"
 report_txt_path = r"resume_extracted.txt"
 
@@ -120,3 +124,4 @@ report_txt_path = r"resume_extracted.txt"
 extract_contents_from_pdf(pdf_path, output_dir, report_txt_path)
 
 subprocess.run([sys.executable, r"tojson.py"])
+
