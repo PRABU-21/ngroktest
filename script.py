@@ -67,7 +67,16 @@ ranked_jobs = sorted(
     reverse=True
 )
 
-print("\n===== Top 5 job matches =====\n")
+
+top_5 = []
 for job, score in ranked_jobs[:5]:
     confidence = ((float(score) + 1) / 2) * 100
-    print(f"{job['title']} → {confidence:.2f}% match")
+    top_5.append({
+        "job_id": job["job_id"],
+        "title": job["title"],
+        "confidence": round(confidence, 2)
+    })
+
+# Print as JSON so your FastAPI subprocess can capture it
+print(json.dumps(top_5))
+
