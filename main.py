@@ -18,6 +18,21 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # FastAPI app
 # =============================
 app = FastAPI()
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://localhost:3000",  # React dev server
+    # Add any other frontends you need
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,       # allow these origins
+    allow_credentials=True,
+    allow_methods=["*"],         # allow all methods (GET, POST, etc)
+    allow_headers=["*"],         # allow all headers
+)
+
 
 # Test endpoint
 @app.get("/ping")
