@@ -51,19 +51,15 @@ async def recommend(file: UploadFile = File(...)):
             f.write(await file.read())
         print(f"[INFO] PDF saved at: {file_path}")
 
-        # Call resumeocr.py with file path
+        # Run resumeocr.py and capture everything
         result = subprocess.run(
-            ["python", RESUME_PIPELINE, file_path],  # file path as argument
+            ["python", RESUME_PIPELINE, file_path],
             capture_output=True,
-            text=True,
-            check=True
+            text=True
         )
 
-        # Parse JSON from stdout
-        recommendations = json.loads(result.stdout)
-
-        # Return top 5 recommendations
-        return JSONResponse(content={"recommendations": recommendations})
+        # Return everything printed to stdout
+        return JSONResponse(content={"output": result.stdout, "errors": result.stderr})
 
     except subprocess.CalledProcessError as e:
         return JSONResponse(
