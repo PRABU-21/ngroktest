@@ -84,26 +84,32 @@ async def recommend(file: UploadFile = File(...)):
 # -----------------------------
 # PDF upload & parser endpoint
 # -----------------------------
+# -----------------------------
+# PDF upload & parser endpoint
+# -----------------------------
 @app.post("/parser")
 async def parse_pdf(file: UploadFile = File(...)):
     try:
+        # 1️⃣ Save uploaded PDF
         file_path = os.path.join(UPLOAD_DIR, file.filename)
         with open(file_path, "wb") as f:
             f.write(await file.read())
         print(f"[INFO] PDF saved at: {file_path}")
 
+        # 2️⃣ Run parseonlyocr.py and capture output JSON file
         result = subprocess.run(
             ["python", PARSER_PIPELINE, file_path],
             capture_output=True,
             text=True
         )
 
-        # Try to extract JSON from stdout
-        matches = re.findall(r"\{.*\}", result.stdout, re.DOTALL)
-        if matches:
-            parsed_data = json.loads(matches[-1])
+        # 3️⃣ Load the generated JSON file
+        parsed_json_file = os.path.join(os.getcwd(), "parsed_resume_only.json")
+        if os.path.exists(parsed_json_file):
+            with open(parsed_json_file, "r", encoding="utf-8") as f:
+                parsed_data = json.load(f)
         else:
-            parsed_data = {"output": result.stdout, "errors": result.stderr}
+            parsed_data = {"error": "Parsed JSON file not found", "stdout": result.stdout, "stderr": result.stderr}
 
         return JSONResponse(content={"parsed_data": parsed_data})
 
