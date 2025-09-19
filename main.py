@@ -1,5 +1,4 @@
-
-# main.py
+import os
 import subprocess
 import uvicorn
 from fastapi import FastAPI, UploadFile, File
@@ -9,40 +8,48 @@ from pyngrok import ngrok
 # =============================
 # Config
 # =============================
-PDF_PATH = "resume.pdf"
+UPLOAD_DIR = "uploads"  # directory to store uploaded PDFs
 RESUME_PIPELINE = r"resumeocr.py"
+
+# Make sure the upload directory exists
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # =============================
 # FastAPI app
 # =============================
 app = FastAPI()
+
+# Test endpoint
 @app.get("/ping")
 async def ping():
-    """
-    Simple test endpoint to verify server is running
-    """
     return {"message": "pong 🏓"}
 
-
+# Upload PDF and call resume processing
 @app.post("/recommendations")
 async def recommend(file: UploadFile = File(...)):
     """
-    Upload resume (PDF) -> run resumeocr.py -> return job recommendations
+    1. Save uploaded PDF to UPLOAD_DIR
+    2. Call resumeocr.py or other functions using the stored file path
+    3. Return job recommendations
     """
     try:
-        # Step 1: Save uploaded PDF
-        with open(PDF_PATH, "wb") as f:
+        # 1️⃣ Save uploaded PDF
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        with open(file_path, "wb") as f:
             f.write(await file.read())
 
-        # Step 2: Call resumeocr.py and capture output
+        print(f"[INFO] PDF saved at: {file_path}")
+
+        # 2️⃣ Call your resume processing function/script
+        # If your resumeocr.py accepts a file path argument, pass it
         result = subprocess.run(
-            ["python", RESUME_PIPELINE],
+            ["python", RESUME_PIPELINE, file_path],  # pass path as argument
             capture_output=True,
             text=True,
             check=True
         )
 
-        # Step 3: Return its stdout (recommendations) as JSON
+        # 3️⃣ Return the output as JSON
         return JSONResponse(content={"recommendations": result.stdout})
 
     except subprocess.CalledProcessError as e:
