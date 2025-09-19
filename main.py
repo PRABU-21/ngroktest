@@ -14,13 +14,14 @@ import re
 # =============================
 UPLOAD_DIR = "uploads"
 RESUME_PIPELINE = "resumeocr.py"
+PARSER_PIPELINE = "parseonlyocr.py"  # <-- new parser script
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # =============================
-# Ngrok Configuration (Placeholders)
+# Ngrok Configuration
 # =============================
-NGROK_AUTH_TOKEN = "2thd7cCsNZHiMDXtyNVKeifH13C_4DzXDA37X2wXDSbnR93iR"           # <-- Replace with your ngrok auth token
-NGROK_DOMAIN = "ursula-pseudoviscous-usably.ngrok-free.app"       # <-- Replace with your reserved free static domain
+NGROK_AUTH_TOKEN = "2thd7cCsNZHiMDXtyNVKeifH13C_4DzXDA37X2wXDSbnR93iR"
+NGROK_DOMAIN = "ursula-pseudoviscous-usably.ngrok-free.app"
 
 # =============================
 # FastAPI app
@@ -29,11 +30,12 @@ app = FastAPI()
 
 # CORS
 origins = [
-    "http://localhost:3000",  # React dev server
+    "http://localhost:3000",
+    "http://localhost:5174",  # Vite dev server
 ]
 app.add_middleware(
     CORSMiddleware,
-   allow_origins=["*"],  
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,25 +54,21 @@ async def ping():
 @app.post("/recommendations")
 async def recommend(file: UploadFile = File(...)):
     try:
-        # Save uploaded PDF
         file_path = os.path.join(UPLOAD_DIR, file.filename)
         with open(file_path, "wb") as f:
             f.write(await file.read())
         print(f"[INFO] PDF saved at: {file_path}")
 
-        # Run resumeocr.py and capture stdout
         result = subprocess.run(
             ["python", RESUME_PIPELINE, file_path],
             capture_output=True,
             text=True
         )
 
-        # Extract JSON array from stdout
         matches = re.findall(r"\[\{.*\}\]", result.stdout, re.DOTALL)
         if matches:
             recommendations = json.loads(matches[-1])
         else:
-            # If JSON not found, return raw output
             recommendations = {"output": result.stdout, "errors": result.stderr}
 
         return JSONResponse(content={"recommendations": recommendations})
@@ -83,16 +81,47 @@ async def recommend(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
+# -----------------------------
+# PDF upload & parser endpoint
+# -----------------------------
+@app.post("/parser")
+async def parse_pdf(file: UploadFile = File(...)):
+    try:
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+        print(f"[INFO] PDF saved at: {file_path}")
+
+        result = subprocess.run(
+            ["python", PARSER_PIPELINE, file_path],
+            capture_output=True,
+            text=True
+        )
+
+        # Try to extract JSON from stdout
+        matches = re.findall(r"\{.*\}", result.stdout, re.DOTALL)
+        if matches:
+            parsed_data = json.loads(matches[-1])
+        else:
+            parsed_data = {"output": result.stdout, "errors": result.stderr}
+
+        return JSONResponse(content={"parsed_data": parsed_data})
+
+    except subprocess.CalledProcessError as e:
+        return JSONResponse(
+            content={"error": "Parser pipeline failed", "details": e.stderr},
+            status_code=500
+        )
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
 # =============================
 # Uvicorn + Ngrok
 # =============================
 if __name__ == "__main__":
     port = 8000
-
-    # Set ngrok auth token
     ngrok.set_auth_token(NGROK_AUTH_TOKEN)
 
-    # Connect to ngrok with reserved static domain
     public_url = ngrok.connect(
         addr=port,
         bind_tls=True,
