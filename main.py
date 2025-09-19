@@ -58,8 +58,13 @@ async def recommend(file: UploadFile = File(...)):
             text=True
         )
 
-        # Return everything printed to stdout
-        return JSONResponse(content={"output": result.stdout, "errors": result.stderr})
+        matches = re.findall(r"\[\{.*\}\]", result.stdout, re.DOTALL)
+        if matches:
+            recommendations = json.loads(matches[-1])
+        else:
+            recommendations = []
+
+        return JSONResponse(content={"recommendations": recommendations})
 
     except subprocess.CalledProcessError as e:
         return JSONResponse(
