@@ -5,6 +5,7 @@ import os
 # -------------------------------
 # 1. Load or download model
 # -------------------------------
+'''
 MODEL_PATH = "./models/all-mpnet-base-v2"
 
 if os.path.exists(MODEL_PATH):
@@ -15,7 +16,7 @@ else:
     model = SentenceTransformer("all-mpnet-base-v2")
     model.save(MODEL_PATH)
 print("[INFO] Model ready.")
-
+'''
 # -------------------------------
 # 2. Load user profile
 # -------------------------------
@@ -79,4 +80,5 @@ for job, score in ranked_jobs[:5]:
 
 # Print as JSON so your FastAPI subprocess can capture it
 print(json.dumps(top_5))
+
 
