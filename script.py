@@ -1,6 +1,7 @@
-from sentence_transformers import SentenceTransformer, util
+import sys
 import json
 import os
+from sentence_transformers import SentenceTransformer, util
 
 # -------------------------------
 # 1. Load or download model
@@ -18,16 +19,14 @@ else:
 print("[INFO] Model ready.")
 
 # -------------------------------
-# 2. Load user profile
+# 2. Load user profile from stdin
 # -------------------------------
 raw_input = sys.stdin.read().strip()
-    if not raw_input:
-        print("No JSON input received.")
-        sys.exit(1)
+if not raw_input:
+    print("No JSON input received.")
+    sys.exit(1)
+
 user_profile = json.loads(raw_input)
-
-
-# Convert dict to string for embedding
 user_profile_text = json.dumps(user_profile, indent=2)
 print("[INFO] User profile ready.")
 
@@ -49,7 +48,6 @@ jobs = [
     {"job_id": 208, "title": "AI Research Intern", "desc": "Work on cutting-edge AI projects focusing on Natural Language Processing (NLP) and Large Language Models (LLMs). Responsibilities include reading research papers, implementing ML/DL models, and running experiments. Strong Python and deep learning knowledge is essential."},
     {"job_id": 209, "title": "Cloud & DevOps Intern", "desc": "Gain hands-on experience in cloud platforms (AWS/Azure/GCP). Work with Docker, CI/CD pipelines, and deployment workflows. Learn infrastructure automation and application monitoring. Basic Linux and scripting knowledge will be highly beneficial."}
 ]
-
 print(f"[INFO] Loaded {len(jobs)} jobs.")
 
 # -------------------------------
@@ -72,7 +70,6 @@ ranked_jobs = sorted(
     reverse=True
 )
 
-
 top_5 = []
 for job, score in ranked_jobs[:5]:
     confidence = ((float(score) + 1) / 2) * 100
@@ -84,8 +81,3 @@ for job, score in ranked_jobs[:5]:
 
 # Print as JSON so your FastAPI subprocess can capture it
 print(json.dumps(top_5))
-
-
-
-
-
