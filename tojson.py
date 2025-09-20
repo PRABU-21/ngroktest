@@ -133,7 +133,7 @@ def parse_resume_with_gemini(resume_text):
 
 if __name__ == "__main__":
     # Step 1: Read resume
-    resume_text = read_resume(RESUME_FILE)
+    resume_text = sys.stdin.read().strip()
 
     # Step 2: Parse resume using Gemini
     parsed_json_text = parse_resume_with_gemini(resume_text)
@@ -169,6 +169,7 @@ if result.stderr:
     except json.JSONDecodeError:
         print("Failed to parse JSON. Raw output:")
         print(parsed_json_text)
+
 
 
 
