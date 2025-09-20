@@ -87,8 +87,10 @@ load_dotenv()
 API_KEY = "AIzaSyBn8KV1fDGv1SQpreTfQKFNoTcWHDeLRQI"  # Your Gemini API key
 genai.configure(api_key=API_KEY)
 
-# File path of the resume
-RESUME_FILE = r"resume_extracted.txt"
+import sys
+
+# Take the file passed from the previous script
+RESUME_FILE = sys.argv[1]
 
 def read_resume(file_path):
     """Read resume content from a text file."""
@@ -162,4 +164,5 @@ if __name__ == "__main__":
     except json.JSONDecodeError:
         print("Failed to parse JSON. Raw output:")
         print(parsed_json_text)
+
 
