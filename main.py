@@ -8,6 +8,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pyngrok import ngrok
 import json
 import re
+from pydantic import BaseModel
+from industry import match_candidates
+
 
 # =============================
 # Config
@@ -123,6 +126,21 @@ async def parse_pdf(file: UploadFile = File(...)):
         )
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
+    
+
+# main.py
+
+
+
+class JobDescription(BaseModel):
+    description: str
+    top_k: int = 3
+
+@app.post("/match_candidates")
+def match(job: JobDescription):
+    results = match_candidates(job.description, top_k=job.top_k)
+    return {"job_description": job.description, "matches": results}
+
 
 # =============================
 # Uvicorn + Ngrok
