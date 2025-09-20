@@ -152,10 +152,12 @@ if __name__ == "__main__":
 
         print("\nExecuting script.py...")
         result = subprocess.run(
-            ["python", "script.py", output_file],  # pass parsed_resume.json
-            capture_output=True,
-            text=True
-        )
+        ["python", "script.py"],
+        input=json.dumps(parsed_resume),  # Pass JSON as input
+        capture_output=True,
+        text=True
+    )
+
 
         print("\n=== script.py Output ===")
         print(result.stdout)
@@ -167,6 +169,7 @@ if result.stderr:
     except json.JSONDecodeError:
         print("Failed to parse JSON. Raw output:")
         print(parsed_json_text)
+
 
 
 
