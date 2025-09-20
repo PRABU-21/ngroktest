@@ -20,8 +20,14 @@ print("[INFO] Model ready.")
 # -------------------------------
 # 2. Load user profile
 # -------------------------------
-with open("parsed_resume.json", "r", encoding="utf-8") as f:
-    user_profile = json.load(f)  # Load as Python dict
+if len(sys.argv) < 2:
+        print("Usage: python script.py <json_file>")
+        sys.exit(1)
+
+json_file = sys.argv[1]
+with open(json_file, "r", encoding="utf-8") as f:
+user_profile = json.load(f)
+
 
 # Convert dict to string for embedding
 user_profile_text = json.dumps(user_profile, indent=2)
@@ -80,6 +86,7 @@ for job, score in ranked_jobs[:5]:
 
 # Print as JSON so your FastAPI subprocess can capture it
 print(json.dumps(top_5))
+
 
 
 
