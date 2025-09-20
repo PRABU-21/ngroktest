@@ -54,28 +54,32 @@ async def ping():
 @app.post("/recommendations")
 async def recommend(file: UploadFile = File(...)):
     try:
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
-        with open(file_path, "wb") as f:
-            f.write(await file.read())
-        print(f"[INFO] PDF saved at: {file_path}")
+        # 1️⃣ Read file bytes directly (no saving needed if you don’t want)
+        pdf_bytes = await file.read()
 
+        # 2️⃣ Run resumeocr.py and send PDF bytes via stdin
         result = subprocess.run(
-            ["python", RESUME_PIPELINE, file_path],
+            ["python", RESUME_PIPELINE],
+            input=pdf_bytes,   # sending file content directly
             capture_output=True,
-            text=True
+            text=False         # must be False because input is binary
         )
 
-        matches = re.findall(r"\[\{.*\}\]", result.stdout, re.DOTALL)
+        # 3️⃣ Decode stdout (since OCR will return text/JSON)
+        stdout_text = result.stdout.decode("utf-8", errors="ignore")
+
+        # 4️⃣ Try extracting recommendations JSON
+        matches = re.findall(r"\[\{.*\}\]", stdout_text, re.DOTALL)
         if matches:
             recommendations = json.loads(matches[-1])
         else:
-            recommendations = {"output": result.stdout, "errors": result.stderr}
+            recommendations = {"output": stdout_text, "errors": result.stderr.decode("utf-8")}
 
         return JSONResponse(content={"recommendations": recommendations})
 
     except subprocess.CalledProcessError as e:
         return JSONResponse(
-            content={"error": "Resume pipeline failed", "details": e.stderr},
+            content={"error": "Resume pipeline failed", "details": e.stderr.decode('utf-8')},
             status_code=500
         )
     except Exception as e:
