@@ -20,13 +20,11 @@ print("[INFO] Model ready.")
 # -------------------------------
 # 2. Load user profile
 # -------------------------------
-if len(sys.argv) < 2:
-        print("Usage: python script.py <json_file>")
+raw_input = sys.stdin.read().strip()
+    if not raw_input:
+        print("No JSON input received.")
         sys.exit(1)
-
-json_file = sys.argv[1]
-with open(json_file, "r", encoding="utf-8") as f:
-user_profile = json.load(f)
+user_profile = json.loads(raw_input)
 
 
 # Convert dict to string for embedding
@@ -86,6 +84,7 @@ for job, score in ranked_jobs[:5]:
 
 # Print as JSON so your FastAPI subprocess can capture it
 print(json.dumps(top_5))
+
 
 
 
