@@ -94,32 +94,31 @@ async def recommend(file: UploadFile = File(...)):
 @app.post("/parser")
 async def parse_pdf(file: UploadFile = File(...)):
     try:
-        # 1️⃣ Save uploaded PDF
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
-        with open(file_path, "wb") as f:
-            f.write(await file.read())
-        print(f"[INFO] PDF saved at: {file_path}")
+        # 1️⃣ Read PDF bytes directly
+        pdf_bytes = await file.read()
 
-        # 2️⃣ Run parseonlyocr.py and capture output JSON file
+        # 2️⃣ Run parseonlyocr.py and pass PDF bytes via stdin
         result = subprocess.run(
-            ["python", PARSER_PIPELINE, file_path],
+            ["python", PARSER_PIPELINE],
+            input=pdf_bytes,   # send raw PDF bytes
             capture_output=True,
-            text=True
+            text=False         # must be False because input is binary
         )
 
-        # 3️⃣ Load the generated JSON file
-        parsed_json_file = os.path.join(os.getcwd(), "parsed_resume_only.json")
-        if os.path.exists(parsed_json_file):
-            with open(parsed_json_file, "r", encoding="utf-8") as f:
-                parsed_data = json.load(f)
-        else:
-            parsed_data = {"error": "Parsed JSON file not found", "stdout": result.stdout, "stderr": result.stderr}
+        # 3️⃣ Decode stdout (parseonlyocr.py should print JSON)
+        stdout_text = result.stdout.decode("utf-8", errors="ignore")
+
+        # 4️⃣ Try to extract JSON from stdout
+        try:
+            parsed_data = json.loads(stdout_text)
+        except json.JSONDecodeError:
+            parsed_data = {"output": stdout_text, "errors": result.stderr.decode("utf-8", errors="ignore")}
 
         return JSONResponse(content={"parsed_data": parsed_data})
 
     except subprocess.CalledProcessError as e:
         return JSONResponse(
-            content={"error": "Parser pipeline failed", "details": e.stderr},
+            content={"error": "Parser pipeline failed", "details": e.stderr.decode('utf-8', errors='ignore')},
             status_code=500
         )
     except Exception as e:
