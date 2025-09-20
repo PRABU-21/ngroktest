@@ -123,5 +123,6 @@ report_txt_path = r"resume_extracted.txt"
 # Run the extraction
 extract_contents_from_pdf(pdf_path, output_dir, report_txt_path)
 
-subprocess.run([sys.executable, r"tojson.py"])
+subprocess.run([sys.executable, r"tojson.py", report_txt_path])
+
 
