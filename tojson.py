@@ -84,7 +84,7 @@ import sys
 # Load environment variables from .env file
 load_dotenv()
 API_KEY = os.getenv("PARSE_API")  # Or directly use your key
-genai.configure(api_key=API_KEY)
+genai.configure(api_key="AIzaSyBn8KV1fDGv1SQpreTfQKFNoTcWHDeLRQI")
 
 def clean_json_text(raw_text):
     """
@@ -154,6 +154,7 @@ if __name__ == "__main__":
     except json.JSONDecodeError:
         print("Failed to parse JSON. Raw output:")
         print(parsed_json_text)
+
 
 
 
