@@ -73,35 +73,24 @@ if __name__ == "__main__":
         print("Failed to parse JSON. Raw output:")
         print(parsed_json_text)
 '''
-
 import os
 import re
 import json
 import subprocess
 import google.generativeai as genai
 from dotenv import load_dotenv
+import sys
 
 # Load environment variables from .env file
 load_dotenv()
-#API_KEY = os.getenv("PARSE_API")  # Your Gemini API key
-API_KEY = "AIzaSyBn8KV1fDGv1SQpreTfQKFNoTcWHDeLRQI"  # Your Gemini API key
-genai.configure(api_key=API_KEY)
-
-# File path of the resume
-RESUME_FILE = r"resume_extracted.txt"
-
-def read_resume(file_path):
-    """Read resume content from a text file."""
-    with open(file_path, "r", encoding="utf-8") as f:
-        return f.read()
+API_KEY = os.getenv("PARSE_API")  # Or directly use your key
+genai.configure(api_key="AIzaSyBn8KV1fDGv1SQpreTfQKFNoTcWHDeLRQI")
 
 def clean_json_text(raw_text):
     """
     Remove any markdown/backticks or extra characters so it can be parsed as JSON.
     """
-    # Remove triple backticks and language hints (```json)
     cleaned = re.sub(r"```(?:json)?", "", raw_text, flags=re.IGNORECASE)
-    # Strip leading/trailing whitespace
     cleaned = cleaned.strip()
     return cleaned
 
@@ -110,7 +99,6 @@ def parse_resume_with_gemini(resume_text):
     model = genai.GenerativeModel("gemini-1.5-flash")
     chat_session = model.start_chat(history=[])
 
-    # Prompt Gemini to extract structured information
     prompt = f"""
     Parse the following resume text and return a JSON with these fields:
     - Name
@@ -130,8 +118,8 @@ def parse_resume_with_gemini(resume_text):
     return cleaned_output
 
 if __name__ == "__main__":
-    # Step 1: Read resume
-    resume_text = read_resume(RESUME_FILE)
+    # Step 1: Read resume text from stdin
+    resume_text = sys.stdin.read().strip()
 
     # Step 2: Parse resume using Gemini
     parsed_json_text = parse_resume_with_gemini(resume_text)
@@ -141,14 +129,33 @@ if __name__ == "__main__":
         parsed_json = json.loads(parsed_json_text)
         print("=== Parsed Resume JSON ===")
         print(json.dumps(parsed_json, indent=4))
-        
+
         # Step 4: Save JSON to file
-        output_file = r"parsed_resume_only.json"
+        output_file = "parsed_resume.json"
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(parsed_json, f, indent=4)
         print(f"\nParsed JSON saved to: {output_file}")
 
-        # Step 5: Run script.py after saving JSON
+        # Step 5: Optionally call another script and pass JSON
+        print("\nExecuting script.py...")
+        result = subprocess.run(
+            ["python", "script.py"],
+            input=json.dumps(parsed_json),  # Pass JSON as input
+            capture_output=True,
+            text=True
+        )
+
+        print("\n=== script.py Output ===")
+        print(result.stdout)
+        if result.stderr:
+            print("\n=== script.py Errors ===")
+            print(result.stderr)
+
     except json.JSONDecodeError:
         print("Failed to parse JSON. Raw output:")
         print(parsed_json_text)
+
+
+
+
+
