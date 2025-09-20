@@ -150,19 +150,23 @@ if __name__ == "__main__":
             json.dump(parsed_json, f, indent=4)
         print(f"\nParsed JSON saved to: {output_file}")
 
-        # Step 5: Run script.py after saving JSON
         print("\nExecuting script.py...")
-        result = subprocess.run(["python", "script.py"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["python", "script.py", output_file],  # pass parsed_resume.json
+            capture_output=True,
+            text=True
+        )
 
-        # Print script.py output
         print("\n=== script.py Output ===")
         print(result.stdout)
-        if result.stderr:
-            print("\n=== script.py Errors ===")
-            print(result.stderr)
+if result.stderr:
+    print("\n=== script.py Errors ===")
+    print(result.stderr)
+
 
     except json.JSONDecodeError:
         print("Failed to parse JSON. Raw output:")
         print(parsed_json_text)
+
 
 
