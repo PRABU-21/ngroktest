@@ -116,8 +116,11 @@ def parse_resume_with_gemini(resume_text):
     response = chat_session.send_message(prompt)
     cleaned_output = clean_json_text(response.text)
     return cleaned_output
-
 if __name__ == "__main__":
+    import sys
+    import json
+    import subprocess
+
     # Step 1: Read resume text from stdin
     resume_text = sys.stdin.read().strip()
 
@@ -127,29 +130,14 @@ if __name__ == "__main__":
     # Step 3: Convert to JSON and print
     try:
         parsed_json = json.loads(parsed_json_text)
-        print("=== Parsed Resume JSON ===")
+        
+        # Print only the JSON (this can be captured directly by FastAPI or other scripts)
         print(json.dumps(parsed_json, indent=4))
 
-        # Step 4: Save JSON to file
+        # Optionally save to a file if you still want it locally
         output_file = "parsed_resume.json"
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(parsed_json, f, indent=4)
-        print(f"\nParsed JSON saved to: {output_file}")
-
-        # Step 5: Optionally call another script and pass JSON
-        print("\nExecuting script.py...")
-        result = subprocess.run(
-            ["python", "script.py"],
-            input=json.dumps(parsed_json),  # Pass JSON as input
-            capture_output=True,
-            text=True
-        )
-
-        print("\n=== script.py Output ===")
-        print(result.stdout)
-        if result.stderr:
-            print("\n=== script.py Errors ===")
-            print(result.stderr)
 
     except json.JSONDecodeError:
         print("Failed to parse JSON. Raw output:")
