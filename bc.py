@@ -445,33 +445,28 @@ async def match_from_file(internship_json: str = File(...)):
     result = select_candidates(internship, candidates)
     return result
 
-
 @app.post("/match_from_file")
-async def match_from_file(internship: str = File(...)):
-    """
-    Takes internship JSON as uploaded file content (string)
-    Reads candidates directly from `/kaggle/working/uploads/resume.json`
-    and returns selection.
-    """
-    # Parse internship JSON string into dict
-    internship_data = json.loads(internship)
+async def match_from_file(file: UploadFile = File(...)):
+    # Save file first
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    content = await file.read()
+    with open(file_path, "wb") as f:
+        f.write(content)
 
-    # Read candidates from saved file
-    file_path = "/kaggle/working/uploads/resume.json"
-    if not os.path.exists(file_path):
-        return {"error": "Resume file not found at /kaggle/working/uploads/resume.json"}
-
+    # Load JSON
     with open(file_path, "r") as f:
-        candidates = json.load(f)  # ✅ Ensure this is a list of dicts
+        data = json.load(f)
 
-    # Check type
-    if not isinstance(candidates, list) or not all(isinstance(c, dict) for c in candidates):
-        return {"error": "Candidates JSON is invalid; must be list of objects"}
+    # Extract internship and candidates
+    internship = data.get("internship")
+    candidates = data.get("candidates")
 
-    # Compute matches
-    result = select_candidates(internship_data, candidates)
+    if internship is None or candidates is None:
+        return {"error": "Invalid JSON structure. Must have 'internship' and 'candidates'"}
+
+    # Select candidates
+    result = select_candidates(internship, candidates)
     return result
-
 
 
 # ==============================
