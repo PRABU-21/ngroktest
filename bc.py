@@ -448,6 +448,26 @@ async def match_from_file(file: UploadFile = File(...)):
     # Now candidates is a list of dicts
     result = select_candidates(internship, candidates)
     return result
+@app.get("/list_applicants")
+async def list_applicants():
+    """
+    Returns all applicants from previously uploaded JSON files in UPLOAD_DIR.
+    """
+    all_candidates = []
+
+    # Iterate over all files in the uploads directory
+    for filename in os.listdir(UPLOAD_DIR):
+        if filename.endswith(".json"):
+            file_path = os.path.join(UPLOAD_DIR, filename)
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    candidates = data.get("candidates", [])
+                    all_candidates.extend(candidates)
+            except Exception as e:
+                print(f"[ERROR] Failed to read {filename}: {e}")
+
+    return {"total_candidates": len(all_candidates), "candidates": all_candidates}
 
 
 # ==============================
