@@ -447,26 +447,21 @@ async def match_from_file(internship_json: str = File(...)):
 
 
 @app.post("/match_from_file")
-async def match_from_file(
-    internship_json: str = Form(...),
-    file: UploadFile = File(...)
-):
-    """Upload resumes + internship details and return matched candidates"""
-    # Save uploaded file
-    file_path = os.path.join(UPLOAD_DIR, "resume.json")
-    with open(file_path, "wb") as f:
-        shutil.copyfileobj(file.file, f)
-
-    # Read resumes
-    with open(file_path, "r", encoding="utf-8") as f:
-        candidates_data = json.load(f)
-
-    # Parse internship
+async def match_from_file(internship_json: str = File(...)):
+    # Parse internship JSON from string
     internship = json.loads(internship_json)
+    
+    # Read candidates from uploaded file
+    file_path = "/kaggle/working/uploads/resume.json"
+    if not os.path.exists(file_path):
+        return {"error": "Resume file not found at /kaggle/working/uploads/resume.json"}
 
-    # Match
-    result = select_candidates(internship, candidates_data)
+    with open(file_path, "r") as f:
+        candidates = json.load(f)  # ✅ parse JSON, not strings
+
+    result = select_candidates(internship, candidates)
     return result
+
 
 # ==============================
 # Run with ngrok in Kaggle
