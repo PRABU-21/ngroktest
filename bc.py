@@ -447,20 +447,31 @@ async def match_from_file(internship_json: str = File(...)):
 
 
 @app.post("/match_from_file")
-async def match_from_file(internship_json: str = File(...)):
-    # Parse internship JSON from string
-    internship = json.loads(internship_json)
-    
-    # Read candidates from uploaded file
+async def match_from_file(internship: str = File(...)):
+    """
+    Takes internship JSON as uploaded file content (string)
+    Reads candidates directly from `/kaggle/working/uploads/resume.json`
+    and returns selection.
+    """
+    # Parse internship JSON string into dict
+    internship_data = json.loads(internship)
+
+    # Read candidates from saved file
     file_path = "/kaggle/working/uploads/resume.json"
     if not os.path.exists(file_path):
         return {"error": "Resume file not found at /kaggle/working/uploads/resume.json"}
 
     with open(file_path, "r") as f:
-        candidates = json.load(f)  # ✅ parse JSON, not strings
+        candidates = json.load(f)  # ✅ Ensure this is a list of dicts
 
-    result = select_candidates(internship, candidates)
+    # Check type
+    if not isinstance(candidates, list) or not all(isinstance(c, dict) for c in candidates):
+        return {"error": "Candidates JSON is invalid; must be list of objects"}
+
+    # Compute matches
+    result = select_candidates(internship_data, candidates)
     return result
+
 
 
 # ==============================
