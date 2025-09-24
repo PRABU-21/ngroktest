@@ -215,3 +215,55 @@ if __name__ == "__main__":
     print(f"[INFO] Public URL: {public_url}")
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+'''
+https://ursula-pseudoviscous-usably.ngrok-free.app/match_internship
+{
+  "internship": {
+    "id": 1,
+    "title": "AI Research Intern",
+    "description": "Work on LLM fine-tuning, embeddings, and RAG pipelines for real-world AI applications.",
+    "required_skills": ["Python", "FastAPI", "Hugging Face", "MongoDB", "NLP"],
+    "location": "Remote",
+    "capacity": 3,
+    "quotas": { "rural_min": 1, "SC_min": 1, "ST_min": 0 },
+    "targeted_social": null
+  },
+  "candidates": [
+    {
+      "id": 101,
+      "name": "Alice",
+      "skills": ["Python", "FastAPI", "MongoDB", "NLP"],
+      "location": "Remote",
+      "rural": false,
+      "social": "General",
+      "experience": "6 months",
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 102,
+      "name": "Bob",
+      "skills": ["React", "Node.js", "JavaScript"],
+      "location": "Remote",
+      "rural": true,
+      "social": "OBC",
+      "experience": "1 year",
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 103,
+      "name": "Charlie",
+      "skills": ["Python", "LLM Fine-tuning", "RAG", "Embeddings"],
+      "location": "Remote",
+      "rural": false,
+      "social": "SC",
+      "experience": "Fresher",
+      "past_participation": false,
+      "has_experience": false
+    }
+  ]
+}
+'''
