@@ -427,44 +427,25 @@ async def health():
 async def match_internship(request: MatchRequest):
     result = select_candidates(request.internship.dict(), [c.dict() for c in request.candidates])
     return result
-
-@app.post("/match_from_file")
-async def match_from_file(internship_json: str = File(...)):
-    """
-    Read resumes from /kaggle/working/uploads/resume.json
-    and match them against the provided internship JSON.
-    """
-    resumes_path = os.path.join(UPLOAD_DIR, "resume.json")
-    if not os.path.exists(resumes_path):
-        return {"error": "No resume file found. Please upload first."}
-
-    with open(resumes_path, "r") as f:
-        candidates = json.load(f)
-
-    internship = json.loads(internship_json)
-    result = select_candidates(internship, candidates)
-    return result
-
 @app.post("/match_from_file")
 async def match_from_file(file: UploadFile = File(...)):
-    # Save file first
+    # Save uploaded file
     file_path = os.path.join(UPLOAD_DIR, file.filename)
     content = await file.read()
     with open(file_path, "wb") as f:
         f.write(content)
 
-    # Load JSON
-    with open(file_path, "r") as f:
-        data = json.load(f)
+    # Decode content as JSON properly
+    content_str = content.decode("utf-8")          # bytes → str
+    data = json.loads(content_str)                 # str → dict
 
-    # Extract internship and candidates
     internship = data.get("internship")
     candidates = data.get("candidates")
 
     if internship is None or candidates is None:
-        return {"error": "Invalid JSON structure. Must have 'internship' and 'candidates'"}
+        return {"error": "Invalid JSON. Must contain 'internship' and 'candidates' keys."}
 
-    # Select candidates
+    # Now candidates is a list of dicts
     result = select_candidates(internship, candidates)
     return result
 
