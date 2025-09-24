@@ -428,15 +428,23 @@ async def match_internship(request: MatchRequest):
     result = select_candidates(request.internship.dict(), [c.dict() for c in request.candidates])
     return result
 
-@app.post("/upload_resumes")
-async def upload_resumes(file: UploadFile = File(...)):
-    """Upload a JSON file of resumes and store it on disk"""
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
-    content = await file.read()
-    with open(file_path, "wb") as f:
-        f.write(content)
-    resumes = json.loads(content)
-    return {"message": f"File saved at {file_path}", "parsed_resumes": resumes}
+@app.post("/match_from_file")
+async def match_from_file(internship_json: str = File(...)):
+    """
+    Read resumes from /kaggle/working/uploads/resume.json
+    and match them against the provided internship JSON.
+    """
+    resumes_path = os.path.join(UPLOAD_DIR, "resume.json")
+    if not os.path.exists(resumes_path):
+        return {"error": "No resume file found. Please upload first."}
+
+    with open(resumes_path, "r") as f:
+        candidates = json.load(f)
+
+    internship = json.loads(internship_json)
+    result = select_candidates(internship, candidates)
+    return result
+
 
 @app.post("/match_from_file")
 async def match_from_file(
