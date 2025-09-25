@@ -237,6 +237,12 @@ import shutil
 # ==============================
 # Configurable weights
 # ==============================
+UPLOAD_DIR = "uploads"
+RESUME_PIPELINE = "resumeocr.py"
+PARSER_PIPELINE = "parseonlyocr.py"  # <-- new parser script
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+
 WEIGHTS = {
     "skill": 0.5,
     "semantic": 0.3,
@@ -468,7 +474,85 @@ async def list_applicants():
                 print(f"[ERROR] Failed to read {filename}: {e}")
 
     return {"total_candidates": len(all_candidates), "candidates": all_candidates}
+@app.get("/ping")
+async def ping():
+    return {"message": "pong 🏓"}
 
+# -----------------------------
+# PDF upload & recommendation
+# -----------------------------
+@app.post("/recommendations")
+async def recommend(file: UploadFile = File(...)):
+    try:
+        # 1️⃣ Read file bytes directly (no saving needed if you don’t want)
+        pdf_bytes = await file.read()
+
+        # 2️⃣ Run resumeocr.py and send PDF bytes via stdin
+        result = subprocess.run(
+            ["python", RESUME_PIPELINE],
+            input=pdf_bytes,   # sending file content directly
+            capture_output=True,
+            text=False         # must be False because input is binary
+        )
+
+        # 3️⃣ Decode stdout (since OCR will return text/JSON)
+        stdout_text = result.stdout.decode("utf-8", errors="ignore")
+
+        # 4️⃣ Try extracting recommendations JSON
+        matches = re.findall(r"\[\{.*\}\]", stdout_text, re.DOTALL)
+        if matches:
+            recommendations = json.loads(matches[-1])
+        else:
+            recommendations = {"output": stdout_text, "errors": result.stderr.decode("utf-8")}
+
+        return JSONResponse(content={"recommendations": recommendations})
+
+    except subprocess.CalledProcessError as e:
+        return JSONResponse(
+            content={"error": "Resume pipeline failed", "details": e.stderr.decode('utf-8')},
+            status_code=500
+        )
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+# -----------------------------
+# PDF upload & parser endpoint
+# -----------------------------
+# -----------------------------
+# PDF upload & parser endpoint
+# -----------------------------
+@app.post("/parser")
+async def parse_pdf(file: UploadFile = File(...)):
+    try:
+        # 1️⃣ Read PDF bytes directly
+        pdf_bytes = await file.read()
+
+        # 2️⃣ Run parseonlyocr.py and pass PDF bytes via stdin
+        result = subprocess.run(
+            ["python", PARSER_PIPELINE],
+            input=pdf_bytes,   # send raw PDF bytes
+            capture_output=True,
+            text=False         # must be False because input is binary
+        )
+
+        # 3️⃣ Decode stdout (parseonlyocr.py should print JSON)
+        stdout_text = result.stdout.decode("utf-8", errors="ignore")
+
+        # 4️⃣ Try to extract JSON from stdout
+        try:
+            parsed_data = json.loads(stdout_text)
+        except json.JSONDecodeError:
+            parsed_data = {"output": stdout_text, "errors": result.stderr.decode("utf-8", errors="ignore")}
+
+        return JSONResponse(content={"parsed_data": parsed_data})
+
+    except subprocess.CalledProcessError as e:
+        return JSONResponse(
+            content={"error": "Parser pipeline failed", "details": e.stderr.decode('utf-8', errors='ignore')},
+            status_code=500
+        )
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
 
 # ==============================
 # Run with ngrok in Kaggle
