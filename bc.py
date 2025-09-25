@@ -341,7 +341,6 @@ if __name__ == "__main__":
 
 
 '''
-
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -354,19 +353,6 @@ from pyngrok import ngrok
 import shutil
 import subprocess
 import re
-
-
-from fastapi import FastAPI, File, UploadFile, Form
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from typing import List, Dict
-from sentence_transformers import SentenceTransformer, util
-import uvicorn
-import os
-import json
-from pyngrok import ngrok
-import shutil
-import subprocess, re
 
 # ==============================
 # Configurable weights
@@ -408,7 +394,19 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # Helper functions
 # ==============================
 def profile_to_text(profile):
-    return f"Name: {profile['name']}. Skills: {', '.join(profile['skills'])}. Location: {profile['location']}. Experience: {profile['experience']}."
+    parts = [
+        f"Name: {profile['name']}",
+        f"Education: {profile.get('education','')}",
+        f"Skills: {', '.join(profile['skills'])}",
+        f"Experience: {', '.join(profile.get('experience',[])) if isinstance(profile.get('experience'), list) else profile.get('experience','')}",
+        f"Objective: {profile.get('objective','')}"
+    ]
+    project_texts = [f"{p['title']}: {p['description']}" for p in profile.get('projects',[])]
+    if project_texts:
+        parts.append("Projects: " + " | ".join(project_texts))
+    if profile.get('certifications'):
+        parts.append("Certifications: " + ", ".join(profile['certifications']))
+    return ". ".join(parts)
 
 def skills_match_fraction(candidate_skills, req_skills):
     return sum(1 for s in req_skills if s in candidate_skills) / len(req_skills)
@@ -417,13 +415,18 @@ def location_score(candidate_loc, req_loc):
     return 1.0 if candidate_loc.strip().lower() == req_loc.strip().lower() else 0.0
 
 def experience_score(candidate_exp):
-    if "fresher" in candidate_exp.lower() or "months" in candidate_exp:
+    # For freshers, experience_score = 1
+    if not candidate_exp:
         return 1.0
-    if "1 year" in candidate_exp:
+    exp_text = " ".join(candidate_exp) if isinstance(candidate_exp, list) else candidate_exp
+    exp_text = exp_text.lower()
+    if "fresher" in exp_text or "months" in exp_text:
+        return 1.0
+    if "1 year" in exp_text:
         return 0.9
-    if "2 year" in candidate_exp:
+    if "2 year" in exp_text:
         return 0.6
-    if "research" in candidate_exp.lower():
+    if "research" in exp_text:
         return 0.8
     return 0.5
 
@@ -431,7 +434,7 @@ def compute_hybrid_score(cand, intern_emb, cand_emb, internship):
     skill_frac = skills_match_fraction(cand['skills'], internship['required_skills'])
     sem_sim = util.pytorch_cos_sim(cand_emb, intern_emb).item()
     loc = location_score(cand['location'], internship['location'])
-    exp = experience_score(cand['experience'])
+    exp = experience_score(cand.get('experience', []))
     base = (
         WEIGHTS['skill'] * skill_frac
         + WEIGHTS['semantic'] * sem_sim
@@ -439,12 +442,12 @@ def compute_hybrid_score(cand, intern_emb, cand_emb, internship):
         + WEIGHTS['experience'] * exp
     )
     adj = 0.0
-    if cand['rural']:
+    if cand.get('rural', False):
         adj += RURAL_BONUS
-    adj += SOCIAL_BONUS.get(cand['social'], 0.0)
-    if cand['past_participation']:
+    adj += SOCIAL_BONUS.get(cand.get('social', 'General'), 0.0)
+    if cand.get('past_participation', False):
         adj -= PAST_PARTICIPATION_PENALTY
-    if internship.get('targeted_social') and cand['social'] == internship['targeted_social']:
+    if internship.get('targeted_social') and cand.get('social') == internship['targeted_social']:
         adj += 0.06
     final_score = max(0.0, base + adj)
     breakdown = {
@@ -452,15 +455,16 @@ def compute_hybrid_score(cand, intern_emb, cand_emb, internship):
         "semantic_sim": sem_sim,
         "location": loc,
         "experience": exp,
-        "social_bonus": SOCIAL_BONUS.get(cand['social'], 0.0),
-        "rural_bonus": RURAL_BONUS if cand['rural'] else 0.0,
-        "past_penalty": PAST_PARTICIPATION_PENALTY if cand['past_participation'] else 0.0,
+        "social_bonus": SOCIAL_BONUS.get(cand.get('social', 'General'), 0.0),
+        "rural_bonus": RURAL_BONUS if cand.get('rural', False) else 0.0,
+        "past_penalty": PAST_PARTICIPATION_PENALTY if cand.get('past_participation', False) else 0.0,
         "final_score": final_score
     }
     return final_score, breakdown
 
 def select_candidates(internship, candidates):
-    filtered_candidates = [c for c in candidates if not c.get("has_experience", False)]
+    # Only select freshers (experience field empty or None)
+    filtered_candidates = [c for c in candidates if not c.get("experience")]
     if not filtered_candidates:
         return {"selected": [], "message": "No fresher candidates found."}
 
@@ -474,58 +478,30 @@ def select_candidates(internship, candidates):
         for c, ce in zip(filtered_candidates, candidate_embeddings)
     ]
 
-    selected = []
+    # Sort candidates by final score
+    candidates_sorted = sorted(
+        zip(filtered_candidates, scores_breakdowns),
+        key=lambda x: x[1][0],  # final_score
+        reverse=True
+    )
+
     capacity = internship['capacity']
+    selected = []
 
-    # Rural quota
-    rural_needed = internship['quotas'].get('rural_min', 0)
-    rural_candidates = [
-        (c, s, bd) for (c, (s, bd)) in zip(filtered_candidates, scores_breakdowns) if c['rural']
-    ]
-    rural_candidates.sort(key=lambda x: x[1], reverse=True)
-    for c, s, bd in rural_candidates[:rural_needed]:
-        selected.append((c, s, bd))
-        capacity -= 1
-
-    # SC/ST quotas
-    for cat_key, quota_key in [('SC', 'SC_min'), ('ST', 'ST_min')]:
-        cat_needed = internship['quotas'].get(quota_key, 0)
-        cat_candidates = [
-            (c, s, bd)
-            for (c, (s, bd)) in zip(filtered_candidates, scores_breakdowns)
-            if c['social'] == cat_key and (c, s, bd) not in selected
-        ]
-        cat_candidates.sort(key=lambda x: x[1], reverse=True)
-        for c, s, bd in cat_candidates[:cat_needed]:
-            if capacity > 0:
-                selected.append((c, s, bd))
-                capacity -= 1
-
-    # Remaining best
-    remaining = [
-        (c, s, bd)
-        for (c, (s, bd)) in zip(filtered_candidates, scores_breakdowns)
-        if (c, s, bd) not in selected
-    ]
-    remaining.sort(key=lambda x: x[1], reverse=True)
-    for c, s, bd in remaining[:capacity]:
-        selected.append((c, s, bd))
-
-    response = []
-    for cand, score, bd in selected:
-        response.append({
+    for cand, (score, breakdown) in candidates_sorted[:capacity]:
+        selected.append({
             "id": cand["id"],
             "name": cand["name"],
             "skills": cand["skills"],
-            "location": cand["location"],
-            "experience": cand["experience"],
-            "social": cand["social"],
-            "rural": cand["rural"],
-            "past_participation": cand["past_participation"],
-            "final_score": bd["final_score"],
-            "breakdown": bd
+            "location": cand.get("location", "Unknown"),
+            "experience": cand.get("experience", []),
+            "social": cand.get("social", "General"),
+            "rural": cand.get("rural", False),
+            "past_participation": cand.get("past_participation", False),
+            "final_score": breakdown["final_score"],
+            "breakdown": breakdown
         })
-    return {"selected": response, "message": "Selection completed."}
+    return {"selected": selected, "message": "Selection completed."}
 
 # ==============================
 # API Models
@@ -545,17 +521,17 @@ class Candidate(BaseModel):
     name: str
     skills: List[str]
     location: str
-    rural: bool
-    social: str
-    experience: str
-    past_participation: bool
-    has_experience: bool
+    rural: bool = False
+    social: str = "General"
+    experience: List[str] = []
+    past_participation: bool = False
+    has_experience: bool = False
 
 class MatchRequest(BaseModel):
     internship: Internship
     candidates: List[Candidate]
 
-class InternshipRequest(BaseModel):   # <-- New model for custom internship
+class InternshipRequest(BaseModel):
     internship: Internship
 
 # ==============================
@@ -577,12 +553,9 @@ async def match_from_file(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         f.write(content)
 
-    content_str = content.decode("utf-8")
-    data = json.loads(content_str)
-
+    data = json.loads(content.decode("utf-8"))
     internship = data.get("internship")
     candidates = data.get("candidates")
-
     if internship is None or candidates is None:
         return {"error": "Invalid JSON. Must contain 'internship' and 'candidates' keys."}
 
@@ -594,12 +567,8 @@ async def match_custom_internship(
     internship_request: InternshipRequest,
     resume_file: UploadFile = File(...)
 ):
-    try:
-        contents = await resume_file.read()
-        resumes = json.loads(contents.decode("utf-8"))
-    except Exception as e:
-        return {"error": f"Invalid resume file: {e}"}
-
+    contents = await resume_file.read()
+    resumes = json.loads(contents.decode("utf-8"))
     internship = internship_request.internship.dict()
     result = select_candidates(internship, resumes)
     return result
@@ -623,9 +592,6 @@ async def list_applicants():
 async def ping():
     return {"message": "pong 🏓"}
 
-# -----------------------------
-# PDF upload & recommendation
-# -----------------------------
 @app.post("/recommendations")
 async def recommend(file: UploadFile = File(...)):
     try:
@@ -638,22 +604,13 @@ async def recommend(file: UploadFile = File(...)):
         )
         stdout_text = result.stdout.decode("utf-8", errors="ignore")
         matches = re.findall(r"\[\{.*\}\]", stdout_text, re.DOTALL)
-        if matches:
-            recommendations = json.loads(matches[-1])
-        else:
-            recommendations = {"output": stdout_text, "errors": result.stderr.decode("utf-8")}
+        recommendations = json.loads(matches[-1]) if matches else {"output": stdout_text, "errors": result.stderr.decode("utf-8")}
         return JSONResponse(content={"recommendations": recommendations})
     except subprocess.CalledProcessError as e:
-        return JSONResponse(
-            content={"error": "Resume pipeline failed", "details": e.stderr.decode('utf-8')},
-            status_code=500
-        )
+        return JSONResponse(content={"error": "Resume pipeline failed", "details": e.stderr.decode('utf-8')}, status_code=500)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
-# -----------------------------
-# PDF upload & parser endpoint
-# -----------------------------
 @app.post("/parser")
 async def parse_pdf(file: UploadFile = File(...)):
     try:
@@ -671,10 +628,7 @@ async def parse_pdf(file: UploadFile = File(...)):
             parsed_data = {"output": stdout_text, "errors": result.stderr.decode("utf-8", errors="ignore")}
         return JSONResponse(content={"parsed_data": parsed_data})
     except subprocess.CalledProcessError as e:
-        return JSONResponse(
-            content={"error": "Parser pipeline failed", "details": e.stderr.decode('utf-8', errors='ignore')},
-            status_code=500
-        )
+        return JSONResponse(content={"error": "Parser pipeline failed", "details": e.stderr.decode('utf-8', errors='ignore')}, status_code=500)
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
@@ -688,3 +642,4 @@ if __name__ == "__main__":
     public_url = ngrok.connect(addr="8000", proto="http", hostname=NGROK_DOMAIN)
     print(f"[INFO] Public URL: {public_url}")
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
