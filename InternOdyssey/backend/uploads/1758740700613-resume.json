@@ -1,0 +1,238 @@
+{
+  "internship": {
+    "id": 1,
+    "title": "AI Research Intern",
+    "description": "Work on LLM fine-tuning, embeddings, and RAG pipelines for real-world AI applications.",
+    "required_skills": ["Python", "FastAPI", "Hugging Face", "MongoDB", "NLP"],
+    "location": "Remote",
+    "capacity": 3,
+    "quotas": {
+      "rural_min": 1,
+      "SC_min": 1,
+      "ST_min": 0
+    },
+    "targeted_social": null
+  },
+  "candidates": [
+    {
+      "id": 106,
+      "name": "Priya",
+      "skills": ["React", "TypeScript", "PostgreSQL", "Docker"],
+      "location": "Pune",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 107,
+      "name": "Rahul",
+      "skills": ["Java", "Spring Boot", "MySQL", "AWS"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 108,
+      "name": "Sneha",
+      "skills": ["Python", "Django", "Redis", "Celery"],
+      "location": "Chennai",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 109,
+      "name": "Arjun",
+      "skills": ["Flutter", "Dart", "Firebase", "SQLite"],
+      "location": "Hyderabad",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 110,
+      "name": "Kavya",
+      "skills": ["Python", "Data Science", "Pandas", "Scikit-learn"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 111,
+      "name": "Vikram",
+      "skills": ["Angular", "Node.js", "Express", "MongoDB"],
+      "location": "Delhi",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 112,
+      "name": "Anita",
+      "skills": ["Python", "OpenCV", "PyTorch", "YOLO"],
+      "location": "Kochi",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 113,
+      "name": "Karthik",
+      "skills": ["React Native", "JavaScript", "Redux", "API Integration"],
+      "location": "Coimbatore",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 114,
+      "name": "Deepika",
+      "skills": ["PHP", "Laravel", "MySQL", "jQuery"],
+      "location": "Jaipur",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 115,
+      "name": "Suresh",
+      "skills": ["Python", "Selenium", "Pytest", "CI/CD"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 116,
+      "name": "Ritu",
+      "skills": ["Vue.js", "Nuxt.js", "GraphQL", "PostgreSQL"],
+      "location": "Indore",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 117,
+      "name": "Amit",
+      "skills": ["C#", ".NET Core", "SQL Server", "Azure"],
+      "location": "Gurgaon",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 118,
+      "name": "Pooja",
+      "skills": ["Python", "Streamlit", "Plotly", "NumPy"],
+      "location": "Nagpur",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 119,
+      "name": "Rohit",
+      "skills": ["Kotlin", "Android", "Room Database", "Retrofit"],
+      "location": "Mumbai",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 120,
+      "name": "Lakshmi",
+      "skills": ["Python", "FastAPI", "Docker", "Kubernetes"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 121,
+      "name": "Naveen",
+      "skills": ["Go", "gRPC", "Docker", "Microservices"],
+      "location": "Pune",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 122,
+      "name": "Shreya",
+      "skills": ["Python", "Tableau", "Power BI", "SQL"],
+      "location": "Ahmedabad",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 123,
+      "name": "Manish",
+      "skills": ["Swift", "iOS", "Core Data", "UIKit"],
+      "location": "Chandigarh",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 124,
+      "name": "Nisha",
+      "skills": ["Ruby", "Rails", "PostgreSQL", "Sidekiq"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 125,
+      "name": "Sanjay",
+      "skills": ["Python", "Apache Spark", "Kafka", "Hadoop"],
+      "location": "Bhopal",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    }
+  ]
+}

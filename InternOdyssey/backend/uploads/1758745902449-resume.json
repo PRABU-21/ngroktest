@@ -1,0 +1,294 @@
+{
+  "internship": {
+    "id": 1,
+    "title": "AI Research Intern",
+    "description": "Contribute to applied AI projects: LLM fine-tuning, embeddings, RAG pipelines, and scalable FastAPI + MongoDB systems. Candidates should be comfortable with Python and modern AI tooling.",
+    "required_skills": ["Python", "FastAPI", "Hugging Face", "MongoDB", "NLP", "Embeddings", "RAG"],
+    "location": "Remote",
+    "capacity": 3,
+    "quotas": {
+      "rural_min": 1,
+      "SC_min": 1,
+      "ST_min": 0
+    },
+    "targeted_social": null
+  },
+  "candidates": [
+    ... (your 20 existing candidates here) ...,
+    {
+      "id": 126,
+      "name": "Meena",
+      "skills": ["Python", "FastAPI", "Hugging Face", "MongoDB", "Transformers"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 127,
+      "name": "Harish",
+      "skills": ["Java", "Spring Boot", "Kafka", "PostgreSQL"],
+      "location": "Bangalore",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 128,
+      "name": "Divya",
+      "skills": ["Python", "Pandas", "Scikit-learn", "NLP", "Text Classification"],
+      "location": "Delhi",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 129,
+      "name": "Anil",
+      "skills": ["Node.js", "Express", "MongoDB", "Redis"],
+      "location": "Lucknow",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 130,
+      "name": "Gayathri",
+      "skills": ["Python", "TensorFlow", "Keras", "FastAPI", "Computer Vision"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 131,
+      "name": "Mohan",
+      "skills": ["C++", "OpenCV", "CUDA", "PyTorch"],
+      "location": "Hyderabad",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 132,
+      "name": "Anusha",
+      "skills": ["Python", "FastAPI", "LangChain", "Hugging Face", "RAG"],
+      "location": "Chennai",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 133,
+      "name": "Ramesh",
+      "skills": ["Go", "Docker", "Kubernetes", "REST APIs"],
+      "location": "Pune",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 134,
+      "name": "Shalini",
+      "skills": ["Python", "SQL", "Tableau", "Power BI"],
+      "location": "Nagpur",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 135,
+      "name": "Vishal",
+      "skills": ["Python", "NLP", "BERT", "Sentence Transformers"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 136,
+      "name": "Kiran",
+      "skills": ["React", "Next.js", "GraphQL", "MongoDB"],
+      "location": "Mysore",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": true,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 137,
+      "name": "Pallavi",
+      "skills": ["Python", "FastAPI", "LangChain", "Hugging Face", "MongoDB"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 138,
+      "name": "Ajay",
+      "skills": ["Flutter", "Firebase", "SQLite", "REST APIs"],
+      "location": "Indore",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 139,
+      "name": "Bhavana",
+      "skills": ["Python", "NLP", "Spacy", "Transformers"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": true
+    },
+    {
+      "id": 140,
+      "name": "Siddharth",
+      "skills": ["Rust", "Actix", "PostgreSQL", "Docker"],
+      "location": "Delhi",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 141,
+      "name": "Tanya",
+      "skills": ["Python", "FastAPI", "RAG", "LLMs", "MongoDB"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 142,
+      "name": "Abhinav",
+      "skills": ["JavaScript", "Vue.js", "Node.js", "Express"],
+      "location": "Varanasi",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 143,
+      "name": "Nandini",
+      "skills": ["Python", "Transformers", "Fine-tuning", "LangChain"],
+      "location": "Bangalore",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 144,
+      "name": "Sathish",
+      "skills": ["C", "C++", "Linux", "Shell Scripting"],
+      "location": "Chennai",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 145,
+      "name": "Rakhi",
+      "skills": ["Python", "Hugging Face", "LangChain", "RAG Pipelines"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": true
+    },
+    {
+      "id": 146,
+      "name": "Manoj",
+      "skills": ["Java", "Spring Boot", "Microservices", "MySQL"],
+      "location": "Jaipur",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    },
+    {
+      "id": 147,
+      "name": "Rekha",
+      "skills": ["Python", "PyTorch", "Transformers", "FastAPI", "MongoDB"],
+      "location": "Remote",
+      "experience": "Fresher",
+      "social": "ST",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 148,
+      "name": "Nikhil",
+      "skills": ["Ruby", "Rails", "Sidekiq", "PostgreSQL"],
+      "location": "Mumbai",
+      "experience": "Fresher",
+      "social": "OBC",
+      "rural": false,
+      "past_participation": true,
+      "has_experience": false
+    },
+    {
+      "id": 149,
+      "name": "Swathi",
+      "skills": ["Python", "LangChain", "NLP", "Embeddings"],
+      "location": "Kochi",
+      "experience": "Fresher",
+      "social": "SC",
+      "rural": true,
+      "past_participation": false,
+      "has_experience": true
+    },
+    {
+      "id": 150,
+      "name": "Akshay",
+      "skills": ["C#", ".NET Core", "Azure", "CosmosDB"],
+      "location": "Hyderabad",
+      "experience": "Fresher",
+      "social": "General",
+      "rural": false,
+      "past_participation": false,
+      "has_experience": false
+    }
+  ]
+}
